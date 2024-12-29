@@ -1,3 +1,5 @@
+import os
+import subprocess
 import streamlit as st
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -6,6 +8,20 @@ import pandas as pd
 
 # Titre de l'application
 st.title("Application d'Analyse de Marché Financier")
+
+# Vérification et installation des dépendances
+if st.button("Installer les dépendances manquantes"):
+    try:
+        result_yf = subprocess.run(["pip", "install", "yfinance"], capture_output=True, text=True)
+        result_arima = subprocess.run(["pip", "install", "pmdarima"], capture_output=True, text=True)
+        result_matplotlib = subprocess.run(["pip", "install", "matplotlib"], capture_output=True, text=True)
+
+        if result_yf.returncode == 0 and result_arima.returncode == 0 and result_matplotlib.returncode == 0:
+            st.success("Toutes les dépendances ont été installées avec succès !")
+        else:
+            st.error(f"Erreur lors de l'installation des dépendances :\n{result_yf.stderr}\n{result_arima.stderr}\n{result_matplotlib.stderr}")
+    except Exception as e:
+        st.error(f"Erreur inattendue : {e}")
 
 # Entrée utilisateur : Symbole de l'action
 symbol = st.text_input("Entrez le symbole de l'action (ex. AAPL, TSLA):", "AAPL")
